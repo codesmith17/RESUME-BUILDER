@@ -39,6 +39,7 @@ client.connect((err) => {
                         address TEXT NOT NULL,
                         phone VARCHAR(20) NOT NULL,
                         email VARCHAR(100) NOT NULL,
+                        summary VARCHAR(300) NOT NULL,
                         FOREIGN KEY (resumeId) REFERENCES resumes(resumeId) ON DELETE CASCADE
                     );
                 `, (err) => {

@@ -3,7 +3,7 @@ import { ResumeInfoContext } from "../../context/ResumeInfoContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "../../components/ui/button";
 import { useParams } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast.js"; // Adjust the import path as needed
+import { useToast } from "@/components/ui/use-toast.js";
 
 const PersonalDetail = ({ enabledNext }) => {
   const params = useParams();
@@ -36,20 +36,26 @@ const PersonalDetail = ({ enabledNext }) => {
           }
         );
         const result = await response.json();
-        const actualData = result.data[0] || {};
+        const emptyObject = {};
+        const actualData = result.data[0] || emptyObject;
 
         // Normalize keys
-        const normalizedData = {
-          firstName: actualData.firstName || actualData.firstname || "",
-          lastName: actualData.lastName || actualData.lastname || "",
-          jobTitle: actualData.jobTitle || actualData.jobtitle || "",
-          address: actualData.address || "",
-          phone: actualData.phone || "",
-          email: actualData.email || "",
-        };
+        if (actualData !== emptyObject) {
+          const normalizedData = {
+            firstName: actualData.firstName || actualData.firstname || "",
+            lastName: actualData.lastName || actualData.lastname || "",
+            jobTitle: actualData.jobTitle || actualData.jobtitle || "",
+            address: actualData.address || "",
+            phone: actualData.phone || "",
+            email: actualData.email || "",
+          };
 
-        setResumeInfo((prev) => ({ ...prev, ...normalizedData }));
-        setFormData((prev) => ({ ...prev, ...normalizedData }));
+          setResumeInfo((prev) => ({ ...prev, ...normalizedData }));
+          setFormData((prev) => ({ ...prev, ...normalizedData }));
+        } else {
+          setFormData((prev) => ({ ...prev, ...resumeInfo }));
+        }
+
         setInitialDataLoaded(true);
       } catch (error) {
         console.error(error);
@@ -61,7 +67,7 @@ const PersonalDetail = ({ enabledNext }) => {
     };
 
     if (!initialDataLoaded) getInitialData();
-  }, [params.resumeId, initialDataLoaded, setResumeInfo, toast]);
+  }, [params.resumeId, resumeInfo]);
 
   const handleInputChange = (e) => {
     enabledNext(false);

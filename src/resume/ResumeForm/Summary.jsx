@@ -7,7 +7,7 @@ import { LoaderCircle } from "lucide-react";
 import { Brain } from "lucide-react";
 const Summary = () => {
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
-  const [summary, setsummary] = useState();
+  const [summary, setSummary] = useState();
   const [loading, setLoading] = useState(false);
   const params = useParams();
   const [aiGeneratedsummaryList, setAiGeneratesummaryList] = useState();
@@ -21,6 +21,7 @@ const Summary = () => {
   const onSave = (e) => {
     e.preventDefault();
     setLoading(true);
+
     const data = {
       data: {
         summary: summary,
@@ -51,7 +52,7 @@ const Summary = () => {
             required
             value={summary}
             defaultValue={summary ? summary : resumeInfo?.summary}
-            onChange={(e) => setsummary(e.target.value)}
+            onChange={(e) => setSummary(e.target.value)}
           />
           <div className="mt-2 flex justify-end">
             <Button type="submit" disabled={loading}>

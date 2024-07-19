@@ -27,20 +27,20 @@ const getResumes = async(req, res, next) => {
 };
 
 const upsertAdditionalInfo = async(req, res, next) => {
-    const { resumeId, firstName, lastName, jobTitle, address, phone, email } = req.body;
+    const { resumeId, firstName, lastName, jobTitle, address, phone, email, summary } = req.body;
     console.log(req.body);
     try {
         const result = await client.query(
             `WITH updated AS (
           UPDATE additional_info 
-          SET firstname=$1, lastname=$2, jobtitle=$3, address=$4, phone=$5, email=$6 
-          WHERE resumeid=$7 
+          SET firstname=$1, lastname=$2, jobtitle=$3, address=$4, phone=$5, email=$6, summary=$7 
+          WHERE resumeid=$8
           RETURNING *
         )
-        INSERT INTO additional_info (resumeid, firstname, lastname, jobtitle, address, phone, email)
-        SELECT $7, $1, $2, $3, $4, $5, $6
+        INSERT INTO additional_info (resumeid, firstname, lastname, jobtitle, address, phone, email, summary)
+        SELECT $8, $1, $2, $3, $4, $5, $6, $7
         WHERE NOT EXISTS (SELECT 1 FROM updated)
-        RETURNING *;`, [firstName, lastName, jobTitle, address, phone, email, resumeId]
+        RETURNING *;`, [firstName, lastName, jobTitle, address, phone, email, resumeId, summary]
         );
 
         if (result.rowCount === 0) {
