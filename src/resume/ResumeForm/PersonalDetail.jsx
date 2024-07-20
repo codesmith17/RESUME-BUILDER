@@ -81,29 +81,27 @@ const PersonalDetail = ({ enabledNext }) => {
     setLoading(true);
     enabledNext(true);
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/resumes/upsertAdditionalInfo",
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
-      await response.json();
+      await fetch("http://localhost:3000/api/resumes/upsertAdditionalInfo", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
       setLoading(false);
       toast({
         title: "Data saved successfully",
         description: "Your personal details have been updated.",
       });
+      console.log(resumeInfo);
     } catch (error) {
-      console.error(error);
       setLoading(false);
       toast({
         title: "Failed to save data",
         description: "An error occurred while saving the data.",
       });
+      throw new Error();
     }
   };
 

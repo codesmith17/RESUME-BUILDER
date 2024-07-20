@@ -4,6 +4,8 @@ const resumeRoutes = require('./routes/resumeRoutes.js');
 const cors = require("cors")
 const app = express();
 const port = 3000;
+require('dotenv').config();
+
 const corsOptions = {
 
     origin: 'http://localhost:5173',

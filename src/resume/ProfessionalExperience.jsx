@@ -1,5 +1,9 @@
 import React from "react";
-
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const options = { month: "short", year: "numeric" };
+  return date.toLocaleDateString("en-GB", options).replace(/ /g, " ");
+}
 function ProfessionalExperience({ resumeInfo }) {
   console.log(resumeInfo);
   return (
@@ -31,16 +35,16 @@ function ProfessionalExperience({ resumeInfo }) {
           <h2 className="text-xs flex justify-between">
             {experience?.companyName},{experience?.city},{experience?.state}
             <span>
-              {experience?.startDate} To{" "}
-              {experience?.currentlyWorking ? "Present" : experience.endDate}{" "}
+              {formatDate(experience?.startDate)} -{" "}
+              {formatDate(experience.endDate)}
             </span>
           </h2>
           {/* <p className='text-xs my-2'>
-                    {experience.workSummery}
+                    {experience.workSummary}
                 </p> */}
           <div
             className="text-xs my-2"
-            dangerouslySetInnerHTML={{ __html: experience?.workSummery }}
+            dangerouslySetInnerHTML={{ __html: experience?.workSummary }}
           />
         </div>
       ))}

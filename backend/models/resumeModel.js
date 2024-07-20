@@ -39,7 +39,6 @@ client.connect((err) => {
                         address TEXT NOT NULL,
                         phone VARCHAR(20) NOT NULL,
                         email VARCHAR(100) NOT NULL,
-                        summary VARCHAR(300) NOT NULL,
                         FOREIGN KEY (resumeId) REFERENCES resumes(resumeId) ON DELETE CASCADE
                     );
                 `, (err) => {
@@ -47,8 +46,23 @@ client.connect((err) => {
                         console.error('Error creating additional_info table', err.stack);
                     } else {
                         console.log('Additional_info table is successfully created');
+
+                        client.query(`
+                            CREATE TABLE IF NOT EXISTS summaries (
+                                summaryId UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                                resumeId UUID NOT NULL,
+                                summary TEXT NOT NULL,
+                                FOREIGN KEY (resumeId) REFERENCES resumes(resumeId) ON DELETE CASCADE
+                            );
+                        `, (err) => {
+                            if (err) {
+                                console.error('Error creating summaries table', err.stack);
+                            } else {
+                                console.log('Summaries table is successfully created');
+                            }
+                            // client.end();
+                        });
                     }
-                    // client.end();
                 });
             }
         });
