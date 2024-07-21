@@ -1,11 +1,11 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const GOOGLE_API_KEY = "AIzaSyAfFJIE6VNGi4479FOqu2XAGsoOZJNIICU";
 
-const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 const fetchResumeSummaries = async(data) => {
+    const GOOGLE_API_KEY = process.env.VITE_GEMINI_API_KEY;
 
+    const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     // const { firstName, lastName, jobTitle, email } = data;
     // const prompt = `
     // Create a concise and impactful resume summary with a strong focus on the job title. Use the following details:
