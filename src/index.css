@@ -7,6 +7,41 @@
   padding-left: 2em;
 }
 
+#print-data {
+  display: block;
+}
+
+#print-none {
+  display: block;
+}
+
+
+/* Override display properties for printing */
+
+@media print {
+  #print-none {
+    display: none;
+  }
+
+  #print-data {
+    display: block;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+}
+
+@page {
+  size: auto;
+  margin: 0;
+}
+
+
+/* Default state for web view */
+
 .rsw-ce ol {
   list-style: decimal;
   padding-left: 2em;

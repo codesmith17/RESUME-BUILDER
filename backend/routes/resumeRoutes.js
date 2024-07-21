@@ -1,5 +1,5 @@
 const express = require('express');
-const { createResume, getResumes, upsertAdditionalInfo, getAdditionalInfoById, updateSummary, getSummaryById, aiGenSummary, upsertExperience, getExperience, upsertEducation, getEducation } = require('../controllers/resumeControllers');
+const { createResume, getResumes, upsertAdditionalInfo, getAdditionalInfoById, updateSummary, getSummaryById, aiGenSummary, upsertExperience, getExperience, upsertEducation, getEducation, upsertSkills, getSkills } = require('../controllers/resumeControllers');
 
 const router = express.Router();
 
@@ -15,4 +15,6 @@ router.get("/getExperience/:resumeId", getExperience);
 router.put("/upsertAdditionalInfo", upsertAdditionalInfo);
 router.get("/getEducation/:resumeId", getEducation);
 router.put("/upsertEducation", upsertEducation);
+router.put("/upsertSkills", upsertSkills);
+router.get("/getSkills/:resumeId", getSkills)
 module.exports = router;

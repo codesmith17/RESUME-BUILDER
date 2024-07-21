@@ -85,8 +85,25 @@ client.connect((err) => {
                                                 console.error('Error creating education table', err.stack);
                                             } else {
                                                 console.log('Education table is successfully created');
-                                            }
 
+                                                // Adding skills table
+                                                client.query(`
+                                                    CREATE TABLE IF NOT EXISTS skills (
+                                                        skillId UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                                                        resumeId UUID NOT NULL,
+                                                        skills JSONB NOT NULL,
+                                                        FOREIGN KEY (resumeId) REFERENCES resumes(resumeId) ON DELETE CASCADE
+                                                    );
+                                                `, (err) => {
+                                                    if (err) {
+                                                        console.error('Error creating skills table', err.stack);
+                                                    } else {
+                                                        console.log('Skills table is successfully created');
+                                                    }
+
+
+                                                });
+                                            }
                                         });
                                     }
                                 });

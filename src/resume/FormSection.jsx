@@ -3,16 +3,29 @@ import PersonalDetail from "./ResumeForm/PersonalDetail";
 import Summary from "./ResumeForm/Summary";
 import Education from "./ResumeForm/Education";
 import Experience from "./ResumeForm/Experience";
+import Skills from "./ResumeForm/Skills";
 import { Button } from "../components/ui/button";
 import { ArrowLeft, ArrowRight, LayoutGrid } from "lucide-react";
+import { Printer } from "lucide-react";
 const FormSection = () => {
   const [activeFormIndex, setActiveFormIndex] = useState(1);
   const [enableNext, setEnableNext] = useState(false);
+  const handleDownload = () => {
+    window.print();
+  };
   return (
-    <div>
+    <div className="display-none">
       <div className="flex flex-row justify-between items-center mb-9">
         <Button variant="outline" size="sm" className="flex gap-2">
           <LayoutGrid></LayoutGrid> Theme
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="flex gap-2"
+          onClick={handleDownload}
+        >
+          <Printer></Printer> Download
         </Button>
         <div className="flex gap-2">
           {activeFormIndex > 1 && (
@@ -58,6 +71,12 @@ const FormSection = () => {
         />
       ) : activeFormIndex === 4 ? (
         <Education
+          enabledNext={(prev) => {
+            setEnableNext(prev);
+          }}
+        />
+      ) : activeFormIndex === 5 ? (
+        <Skills
           enabledNext={(prev) => {
             setEnableNext(prev);
           }}

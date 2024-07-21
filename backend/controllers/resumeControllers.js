@@ -145,7 +145,7 @@ const getExperience = async(req, res) => {
 }
 const upsertEducation = async(req, res) => {
     const { resumeId, educationList } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
     if (!resumeId || !Array.isArray(educationList) || educationList.length === 0) {
         return res.status(400).json({ message: 'Resume ID and a list of education are required' });
     }
@@ -182,10 +182,58 @@ const getEducation = async(req, res) => {
     const { resumeId } = req.params;
     try {
         const result = await client.query(`SELECT education FROM education WHERE resumeid=$1`, [resumeId]);
-        console.log(result.rows);
+        // console.log(result.rows);
         res.status(200).json({ message: "FETCHED SSUCCESSFULLY", data: result.rows })
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 }
-module.exports = { createResume, getResumes, upsertAdditionalInfo, getAdditionalInfoById, updateSummary, getSummaryById, aiGenSummary, upsertExperience, getExperience, upsertEducation, getEducation };
+const upsertSkills = async(req, res) => {
+    const { skillList, resumeId } = req.body;
+    if (!resumeId || !Array.isArray(skillList) || skillList.length === 0) {
+        return res.status(400).json({ message: 'Resume ID and a list of skills are required' });
+    }
+
+    try {
+        // Start a transaction
+        await client.query('BEGIN');
+
+        // Delete existing experiences for this resume
+        await client.query('DELETE FROM skills WHERE resumeId = $1', [resumeId]);
+
+        // Insert new experiences
+        for (const skill of skillList) {
+            const query = `
+                INSERT INTO skills (resumeId, skills)
+                VALUES ($1, $2::jsonb)
+            `;
+
+            const values = [resumeId, JSON.stringify(skill)];
+            await client.query(query, values);
+        }
+
+        // Commit the transaction
+        await client.query('commit');
+        res.status(200).json({ message: 'Skills updated successfully' });
+    } catch (error) {
+        // Rollback in case of error
+        await client.query('ROLLBACK');
+        console.error('Error updating Skills:', error.stack);
+        res.status(500).json({ message: 'Failed to update skills' });
+    }
+
+}
+const getSkills = async(req, res, next) => {
+    const { resumeId } = req.params;
+    if (!resumeId) {
+        return res.status(400).json({ message: 'Resume ID is required' });
+    }
+    try {
+        const data = await client.query("SELECT skills FROM skills WHERE resumeid = $1", [resumeId]);
+        return res.status(200).json({ message: "FETCHED SSUCCESSFULLY", data: data.rows })
+    } catch (error) {
+        console.error(error);
+        res.status(400).json(error.message);
+    }
+}
+module.exports = { createResume, getResumes, upsertAdditionalInfo, getAdditionalInfoById, updateSummary, getSummaryById, aiGenSummary, upsertExperience, getExperience, upsertEducation, getEducation, upsertSkills, getSkills };

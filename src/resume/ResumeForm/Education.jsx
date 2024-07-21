@@ -246,96 +246,94 @@ const Education = ({ enabledNext }) => {
         <p>Add your education</p>
         <form onSubmit={onSave}>
           {educationList.map((item, index) => (
-            <div key={index}>
-              <div className="grid grid-cols-2 gap-3 border p-3 my-5 rounded-lg">
-                <div>
-                  <label className="text-xs">University Name</label>
-                  <Input
-                    name="universityName"
-                    required
-                    onChange={(event) => handleChange(index, event)}
-                    value={item.universityName}
-                  />
-                </div>
+            <>
+              <div key={index}>
+                <div className="grid grid-cols-2 gap-3 border p-3 my-5 rounded-lg">
+                  <div>
+                    <label className="text-xs">University Name</label>
+                    <Input
+                      name="universityName"
+                      required
+                      onChange={(event) => handleChange(index, event)}
+                      value={item.universityName}
+                    />
+                  </div>
 
-                <div>
-                  <label className="text-xs">Degree</label>
-                  <Input
-                    name="degree"
-                    required
-                    onChange={(event) => handleChange(index, event)}
-                    value={item.degree}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs">Major</label>
-                  <Input
-                    name="major"
-                    required
-                    onChange={(event) => handleChange(index, event)}
-                    value={item.major}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs">Start Date</label>
-                  <Input
-                    type="date"
-                    name="startDate"
-                    required
-                    onChange={(event) => handleChange(index, event)}
-                    value={item.startDate}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs">End Date</label>
-                  <Input
-                    type="date"
-                    name="endDate"
-                    required
-                    onChange={(event) => handleChange(index, event)}
-                    value={item.endDate}
-                  />
-                </div>
-                <div className="col-span-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="border-primary text-primary flex my-2"
-                    onClick={() => generateAISummaries(index)}
-                    disabled={aiLoading}
-                  >
-                    <Brain className="h-4 w-4 mr-2" />
-                    {aiLoading ? "Generating..." : "Generate AI Summary"}
-                  </Button>
-                  <RichTextEditor
-                    key={`editor-${index}`}
-                    index={index}
-                    defaultValue={item.description}
-                    name="description"
-                    onRichTextEditorChange={handleRichTextEditorChange}
-                  />
+                  <div>
+                    <label className="text-xs">Degree</label>
+                    <Input
+                      name="degree"
+                      required
+                      onChange={(event) => handleChange(index, event)}
+                      value={item.degree}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs">Major</label>
+                    <Input
+                      name="major"
+                      required
+                      onChange={(event) => handleChange(index, event)}
+                      value={item.major}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs">Start Date</label>
+                    <Input
+                      type="date"
+                      name="startDate"
+                      required
+                      onChange={(event) => handleChange(index, event)}
+                      value={item.startDate}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs">End Date</label>
+                    <Input
+                      type="date"
+                      name="endDate"
+                      required
+                      onChange={(event) => handleChange(index, event)}
+                      value={item.endDate}
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-primary text-primary flex my-2"
+                      onClick={() => generateAISummaries(index)}
+                      disabled={aiLoading}
+                    >
+                      <Brain className="h-4 w-4 mr-2" />
+                      {aiLoading ? "Generating..." : "Generate AI Summary"}
+                    </Button>
+                    <RichTextEditor
+                      key={`editor-${index}`}
+                      index={index}
+                      defaultValue={item.description}
+                      name="description"
+                      onRichTextEditorChange={handleRichTextEditorChange}
+                    />
+                  </div>
                 </div>
               </div>
-              {index !== 0 && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-red-500 text-red-500 flex my-2"
-                  onClick={removeNewEducation}
-                >
-                  <MinusCircleIcon className="h-4 w-4 mr-2" />
-                  Remove Education
-                </Button>
-              )}
-            </div>
+            </>
           ))}
           <div className="my-2">
             <div className="flex flex-row justify-between my-2">
-              <Button type="button" onClick={addNewEducation}>
-                <PlusCircleIcon className="mr-2" /> Add more education
-              </Button>
+              <div className="flex flex-row gap-2">
+                <Button type="button" onClick={addNewEducation}>
+                  <PlusCircleIcon className="mr-2" /> Add more education
+                </Button>
+                {educationList.length > 1 && (
+                  <Button variant="destructive" onClick={removeNewEducation}>
+                    <MinusCircleIcon className="h-4 w-4 mr-2" />
+                    Remove Education
+                  </Button>
+                )}
+              </div>
               <Button
-                size="sm"
                 className="border-primary bg-primary text-white flex my-2"
                 type="submit"
                 disabled={loading}
