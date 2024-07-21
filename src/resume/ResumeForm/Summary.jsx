@@ -66,15 +66,20 @@ const Summary = ({ enabledNext }) => {
   const generateAISummaries = async () => {
     setAiLoading(true);
     setIsDialogOpen(true);
-    const aiParameter = JSON.stringify({
-      firstName: resumeInfo.firstName,
-      lastName: resumeInfo.lastName,
-      email: resumeInfo.email,
-      jobTitle: resumeInfo.jobTitle,
-    });
+    const prompt = `
+      Create a concise and impactful resume summary using the above data with a strong focus on the job title. Use the following details:
+  
+      Name: ${resumeInfo.firstName} ${resumeInfo.lastName}
+      Job Title: ${resumeInfo.jobTitle}
+      Email: ${resumeInfo.email}
+      
+      The experience should emphasize the individual's job title and highlight their key qualifications and achievements relevant to this role. Make sure the summary is professional and tailored to showcase their expertise in the job title effectively.
+      Give 2-3 options for this in JSON format. Provide an array of objects with a "summary" field.
+      Don't give anything else. Just the list of summary, it breaks my app.
+    `;
     try {
       const response = await fetch(
-        `http://localhost:3000/api/resumes/aiGenSummary/${aiParameter}`
+        `http://localhost:3000/api/resumes/aiGenSummary/${prompt}`
       );
       if (!response.ok) {
         throw new Error("Failed to generate AI summaries");

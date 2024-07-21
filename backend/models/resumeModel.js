@@ -59,8 +59,38 @@ client.connect((err) => {
                                 console.error('Error creating summaries table', err.stack);
                             } else {
                                 console.log('Summaries table is successfully created');
+
+                                client.query(`
+                                    CREATE TABLE IF NOT EXISTS experience (
+                                        experienceId UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                                        resumeId UUID NOT NULL,
+                                        experience JSONB NOT NULL,
+                                        FOREIGN KEY (resumeId) REFERENCES resumes(resumeId) ON DELETE CASCADE
+                                    );
+                                `, (err) => {
+                                    if (err) {
+                                        console.error('Error creating experience table', err.stack);
+                                    } else {
+                                        console.log('Experience table is successfully created');
+
+                                        client.query(`
+                                            CREATE TABLE IF NOT EXISTS education (
+                                                educationId UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                                                resumeId UUID NOT NULL,
+                                                education JSONB NOT NULL,
+                                                FOREIGN KEY (resumeId) REFERENCES resumes(resumeId) ON DELETE CASCADE
+                                            );
+                                        `, (err) => {
+                                            if (err) {
+                                                console.error('Error creating education table', err.stack);
+                                            } else {
+                                                console.log('Education table is successfully created');
+                                            }
+
+                                        });
+                                    }
+                                });
                             }
-                            // client.end();
                         });
                     }
                 });

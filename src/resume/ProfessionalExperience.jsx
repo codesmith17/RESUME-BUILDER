@@ -5,7 +5,7 @@ function formatDate(dateString) {
   return date.toLocaleDateString("en-GB", options).replace(/ /g, " ");
 }
 function ProfessionalExperience({ resumeInfo }) {
-  console.log(resumeInfo);
+  // console.log(resumeInfo);
   return (
     <div className="my-6">
       <h2

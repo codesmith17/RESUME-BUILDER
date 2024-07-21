@@ -1,7 +1,4 @@
-import { useScroll } from "framer-motion";
-import React, { useState } from "react";
-import { Button } from "../components/ui/button";
-import { Brain } from "lucide-react";
+import React, { useState, useEffect } from "react";
 import {
   BtnBold,
   BtnBulletList,
@@ -16,18 +13,23 @@ import {
   Separator,
 } from "react-simple-wysiwyg";
 
-const RichTextEditor = ({ onRichTextEditorChange, index, defaultValue }) => {
-  const [value, setValue] = useState();
-  return (
-    <div>
+const RichTextEditor = React.memo(
+  ({ onRichTextEditorChange, index, defaultValue, name }) => {
+    const [value, setValue] = useState(defaultValue);
+
+    useEffect(() => {
+      setValue(defaultValue);
+    }, [defaultValue]);
+
+    const handleChange = (e) => {
+      const newValue = e.target.value;
+      setValue(newValue);
+      onRichTextEditorChange(newValue, name, index);
+    };
+
+    return (
       <EditorProvider>
-        <Editor
-          value={value}
-          onChange={(e) => {
-            setValue(e.target.value);
-            onRichTextEditorChange(e);
-          }}
-        >
+        <Editor value={value} onChange={handleChange}>
           <Toolbar>
             <BtnBold />
             <BtnItalic />
@@ -41,8 +43,8 @@ const RichTextEditor = ({ onRichTextEditorChange, index, defaultValue }) => {
           </Toolbar>
         </Editor>
       </EditorProvider>
-    </div>
-  );
-};
+    );
+  }
+);
 
 export default RichTextEditor;

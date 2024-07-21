@@ -14,7 +14,6 @@ import {
   MinusCircleIcon,
   SquareCheck,
 } from "lucide-react";
-// import { useParams } from "react-router-dom";
 import RichTextEditor from "../../Home/RichTextEditor";
 import { ResumeInfoContext } from "../../context/ResumeInfoContext";
 import { useParams } from "react-router-dom";
@@ -22,20 +21,19 @@ import { useToast } from "@/components/ui/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Experience = ({ enabledNext }) => {
+const Education = ({ enabledNext }) => {
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
   const { toast } = useToast();
   const params = useParams();
 
-  const [experienceList, setExperienceList] = useState([
+  const [educationList, setEducationList] = useState([
     {
-      title: "",
-      companyName: "",
-      city: "",
-      state: "",
+      universityName: "",
+      degree: "",
+      major: "",
       startDate: "",
       endDate: "",
-      workSummary: "",
+      description: "",
     },
   ]);
   const [loading, setLoading] = useState(false);
@@ -45,60 +43,51 @@ const Experience = ({ enabledNext }) => {
 
   const handleChange = (index, e) => {
     const { name, value } = e.target;
-    setExperienceList((prevList) =>
+    setEducationList((prevList) =>
       prevList.map((item, i) =>
         i === index ? { ...item, [name]: value } : item
       )
     );
   };
 
-  const addNewExperience = () => {
-    setExperienceList((prevList) => [
+  const addNewEducation = () => {
+    setEducationList((prevList) => [
       ...prevList,
       {
-        title: "",
-        companyName: "",
-        city: "",
-        state: "",
+        universityName: "",
+        degree: "",
+        major: "",
         startDate: "",
         endDate: "",
-        workSummary: "",
+        description: "",
       },
     ]);
   };
 
-  const removeNewExperience = () => {
-    setExperienceList((prevList) => prevList.slice(0, -1));
+  const removeNewEducation = () => {
+    setEducationList((prevList) => prevList.slice(0, -1));
   };
 
   const handleRichTextEditorChange = useCallback((newValue, name, index) => {
-    setExperienceList((prevList) => {
-      const newList = prevList.map((item, i) =>
-        i === index ? { ...item, [name]: newValue } : item
-      );
+    setEducationList((prevList) => {
+      const newList = [...prevList];
+      newList[index] = { ...newList[index], [name]: newValue };
       return newList;
     });
   }, []);
-  // const handleRichTextEditor = (e, name, index) => {
-  //   const newEntries = experienceList.slice();
-  //   newEntries[index][name] = e.target.value;
-  //   console.log(newEntries[index]);
-  //   setExperienceList(newEntries);
-  //   // console.log(experienceList);
-  // };
-  const [currentExpIndexAI, setCurrentExpIndexAI] = useState(0);
+
+  const [currentEduIndexAI, setCurrentEduIndexAI] = useState(0);
   const generateAISummaries = async (index) => {
-    const currentExperience = experienceList[index];
+    const currentEducation = educationList[index];
     const requiredFields = [
-      "title",
-      "companyName",
-      "city",
-      "state",
+      "universityName",
+      "degree",
+      "major",
       "startDate",
       "endDate",
     ];
     const emptyFields = requiredFields.filter(
-      (field) => currentExperience[field] === ""
+      (field) => currentEducation[field] === ""
     );
 
     if (emptyFields.length > 0) {
@@ -114,19 +103,19 @@ const Experience = ({ enabledNext }) => {
 
     setAiLoading(true);
     setIsDialogOpen(true);
-    setCurrentExpIndexAI(index);
+    setCurrentEduIndexAI(index);
 
     const prompt = `
-      Create a concise and impactful resume experience using the above data with a strong focus on the job title. Use the following details:
+      Create a concise and impactful resume education entry using the following details:
   
-      Name: ${resumeInfo.firstName} ${resumeInfo.lastName}
-      Job Title: ${resumeInfo.jobTitle}
-      Email: ${resumeInfo.email}
-      Experience and Company Name: ${currentExperience.title}, ${currentExperience.companyName}
+      University Name: ${currentEducation.universityName}
+      Degree: ${currentEducation.degree}
+      Major: ${currentEducation.major}
+      Start Date: ${currentEducation.startDate}
+      End Date: ${currentEducation.endDate}
       
-      The experience should emphasize the individual's job title and highlight their key qualifications and achievements relevant to this role. Make sure the summary is professional and tailored to showcase their expertise in the job title effectively.
-      Give 2-3 options for this in JSON format. Provide an array of objects with a "summary" field.
-      Don't give anything else. Just the list of summary, it breaks my app.
+      The summary should highlight the key aspects of the educational experience, including any notable achievements or relevant coursework. Provide 2-3 options for this in JSON format. Provide an array of objects with a "summary" field.
+      Don't give anything else. Just the list of summaries, it breaks my app.
     `;
 
     try {
@@ -158,11 +147,10 @@ const Experience = ({ enabledNext }) => {
   };
 
   const selectAISummary = (index, selectedSummary) => {
-    // console.log(selectedSummary);
     handleRichTextEditorChange(
       selectedSummary,
-      "workSummary",
-      currentExpIndexAI
+      "description",
+      currentEduIndexAI
     );
 
     setIsDialogOpen(false);
@@ -175,7 +163,7 @@ const Experience = ({ enabledNext }) => {
 
     try {
       const response = await fetch(
-        "http://localhost:3000/api/resumes/upsertExperience",
+        "http://localhost:3000/api/resumes/upsertEducation",
         {
           method: "PUT",
           headers: {
@@ -183,7 +171,7 @@ const Experience = ({ enabledNext }) => {
           },
           body: JSON.stringify({
             resumeId: params.resumeId,
-            experienceList,
+            educationList,
           }),
         }
       );
@@ -194,7 +182,7 @@ const Experience = ({ enabledNext }) => {
       }
       toast({
         title: "Data saved successfully",
-        description: "Your experience details have been updated.",
+        description: "Your education details have been updated.",
       });
       setLoading(false);
       enabledNext(true);
@@ -207,11 +195,12 @@ const Experience = ({ enabledNext }) => {
       });
     }
   };
+
   const [initialDataLoaded, setInitialDataLoaded] = useState(false);
   useEffect(() => {
-    const fetchExperience = async () => {
+    const fetchEducation = async () => {
       const response = await fetch(
-        ` http://localhost:3000/api/resumes/getExperience/2b295add-6237-473f-ae3d-ed74d131f9e3`,
+        `http://localhost:3000/api/resumes/getEducation/${params.resumeId}`,
         {
           method: "GET",
           headers: {
@@ -223,74 +212,68 @@ const Experience = ({ enabledNext }) => {
       if (!response.ok) {
         throw new Error(response.status);
       }
+      console.log(resumeInfo.education);
       const data = await response.json();
       if (data.message !== "FETCHED SSUCCESSFULLY")
         throw new Error(response.status);
-      const dummyArray = resumeInfo.experience;
+
+      const dummyArray = resumeInfo.education;
       console.log(resumeInfo);
       const actualData =
         data && data?.data && data?.data.length ? data.data : dummyArray;
       if (actualData === dummyArray) {
-        setExperienceList(actualData);
+        setEducationList(actualData);
         setInitialDataLoaded(true);
         return;
       }
-      const parsedExperienceList = actualData.map((item) => item.experience);
+      const parsedEducationList = actualData.map((item) => item.education);
 
-      setExperienceList(parsedExperienceList);
+      setEducationList(parsedEducationList);
       setInitialDataLoaded(true);
     };
-    if (!initialDataLoaded) fetchExperience();
+    if (!initialDataLoaded) fetchEducation();
     setResumeInfo((prevInfo) => ({
       ...prevInfo,
-      experience: experienceList,
+      education: educationList,
     }));
-    console.log(experienceList);
-  }, [experienceList, initialDataLoaded]);
+    console.log(educationList);
+  }, [educationList, initialDataLoaded]);
 
   return (
     <div>
       <div className="p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-10">
-        <h2 className="font-bold text-lg">Professional Experience</h2>
-        <p>Add your previous job experience</p>
+        <h2 className="font-bold text-lg">Education</h2>
+        <p>Add your education</p>
         <form onSubmit={onSave}>
-          {experienceList.map((item, index) => (
+          {educationList.map((item, index) => (
             <div key={index}>
               <div className="grid grid-cols-2 gap-3 border p-3 my-5 rounded-lg">
                 <div>
-                  <label className="text-xs">Position Title</label>
+                  <label className="text-xs">University Name</label>
                   <Input
-                    name="title"
+                    name="universityName"
                     required
                     onChange={(event) => handleChange(index, event)}
-                    value={item.title}
+                    value={item.universityName}
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs">Degree</label>
+                  <Input
+                    name="degree"
+                    required
+                    onChange={(event) => handleChange(index, event)}
+                    value={item.degree}
                   />
                 </div>
                 <div>
-                  <label className="text-xs">Company Name</label>
+                  <label className="text-xs">Major</label>
                   <Input
-                    name="companyName"
+                    name="major"
                     required
                     onChange={(event) => handleChange(index, event)}
-                    value={item.companyName}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs">City</label>
-                  <Input
-                    name="city"
-                    required
-                    onChange={(event) => handleChange(index, event)}
-                    value={item.city}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs">State</label>
-                  <Input
-                    name="state"
-                    required
-                    onChange={(event) => handleChange(index, event)}
-                    value={item.state}
+                    value={item.major}
                   />
                 </div>
                 <div>
@@ -322,46 +305,48 @@ const Experience = ({ enabledNext }) => {
                     disabled={aiLoading}
                   >
                     <Brain className="h-4 w-4 mr-2" />
-                    {aiLoading ? "Generating..." : "Generate from AI"}
+                    {aiLoading ? "Generating..." : "Generate AI Summary"}
                   </Button>
-
                   <RichTextEditor
                     key={`editor-${index}`}
                     index={index}
-                    defaultValue={item.workSummary}
-                    name="workSummary"
+                    defaultValue={item.description}
+                    name="description"
                     onRichTextEditorChange={handleRichTextEditorChange}
                   />
                 </div>
               </div>
-            </div>
-          ))}
-          <div className="my-10 flex justify-between">
-            <div className="flex flex-row gap-2">
-              <Button type="button" onClick={addNewExperience}>
-                <PlusCircleIcon className="mr-2" /> Add more experience
-              </Button>
-              {experienceList.length > 1 && (
+              {index !== 0 && (
                 <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={removeNewExperience}
+                  variant="outline"
+                  size="sm"
+                  className="border-red-500 text-red-500 flex my-2"
+                  onClick={removeNewEducation}
                 >
-                  <MinusCircleIcon className="mr-2" /> Remove
+                  <MinusCircleIcon className="h-4 w-4 mr-2" />
+                  Remove Education
                 </Button>
               )}
             </div>
-            <Button type="submit" disabled={loading}>
-              {loading ? (
-                <LoaderCircle className="animate-spin mr-2" />
-              ) : (
-                <SquareCheck className="mr-2" />
-              )}
-              {loading ? "Saving..." : "Save"}
-            </Button>
+          ))}
+          <div className="my-2">
+            <div className="flex flex-row justify-between my-2">
+              <Button type="button" onClick={addNewEducation}>
+                <PlusCircleIcon className="mr-2" /> Add more education
+              </Button>
+              <Button
+                size="sm"
+                className="border-primary bg-primary text-white flex my-2"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? "Saving..." : "Save"}
+              </Button>
+            </div>
           </div>
         </form>
       </div>
+
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-md w-full">
           <DialogHeader>
@@ -402,4 +387,4 @@ const Experience = ({ enabledNext }) => {
   );
 };
 
-export default Experience;
+export default Education;

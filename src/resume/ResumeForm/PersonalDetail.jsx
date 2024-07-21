@@ -79,29 +79,48 @@ const PersonalDetail = ({ enabledNext }) => {
   const onSave = async (e) => {
     e.preventDefault();
     setLoading(true);
-    enabledNext(true);
-    try {
-      await fetch("http://localhost:3000/api/resumes/upsertAdditionalInfo", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+    enabledNext(false); // Disable next button while saving
 
-      setLoading(false);
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/resumes/upsertAdditionalInfo",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      // Check for non-OK response
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          `HTTP error! status: ${response.status}, message: ${errorData.message}`
+        );
+      }
+
+      // Parse response data
+      const responseData = await response.json();
+      console.log("Response Data:", responseData);
+
       toast({
         title: "Data saved successfully",
         description: "Your personal details have been updated.",
       });
-      console.log(resumeInfo);
-    } catch (error) {
+
       setLoading(false);
+      enabledNext(true); // Re-enable next button after successful save
+    } catch (error) {
+      console.error("Error saving data:", error);
+      setLoading(false);
+      enabledNext(true); // Re-enable next button even if save fails
       toast({
         title: "Failed to save data",
-        description: "An error occurred while saving the data.",
+        description: `An error occurred while saving the data: ${error.message}`,
+        variant: "destructive",
       });
-      throw new Error();
     }
   };
 

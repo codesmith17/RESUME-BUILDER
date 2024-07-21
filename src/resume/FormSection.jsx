@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PersonalDetail from "./ResumeForm/PersonalDetail";
 import Summary from "./ResumeForm/Summary";
+import Education from "./ResumeForm/Education";
 import Experience from "./ResumeForm/Experience";
 import { Button } from "../components/ui/button";
 import { ArrowLeft, ArrowRight, LayoutGrid } from "lucide-react";
@@ -51,6 +52,12 @@ const FormSection = () => {
         />
       ) : activeFormIndex === 3 ? (
         <Experience
+          enabledNext={(prev) => {
+            setEnableNext(prev);
+          }}
+        />
+      ) : activeFormIndex === 4 ? (
+        <Education
           enabledNext={(prev) => {
             setEnableNext(prev);
           }}
