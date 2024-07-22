@@ -9,6 +9,7 @@ const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ClerkProvider } from "@clerk/clerk-react";
 import EditResume from "./resume/EditResume.jsx";
+import FinalPage from "./resume/FinalPage.jsx";
 const router = createBrowserRouter([
   {
     element: <App />,
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/resume/:resumeId/edit",
         element: <EditResume />,
+      },
+      {
+        path: "/myResume/:resumeId",
+        element: <FinalPage />,
       },
     ],
   },
