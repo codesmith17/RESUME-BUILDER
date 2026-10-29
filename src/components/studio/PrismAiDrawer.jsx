@@ -12,9 +12,18 @@ import {
   Maximize2,
   Minimize2,
   ArrowRight,
-  Code2
+  Code2,
+  Cpu,
+  ChevronDown
 } from 'lucide-react';
-import { executeAiTask, offlineSmartAi } from '../../services/aiService';
+import { 
+  executeAiTask, 
+  offlineSmartAi,
+  getSelectedProvider,
+  setSelectedProvider,
+  AI_PROVIDERS,
+  AI_PROVIDER_CONFIGS
+} from '../../services/aiService';
 
 // Component to render chat messages with formatted code blocks and "Apply to Code" actions
 function MessageBubble({ msg, onApplySnippet }) {
@@ -150,6 +159,17 @@ export default function PrismAiDrawer({
   const [isExpanded, setIsExpanded] = useState(false);
   const [proposedCode, setProposedCode] = useState(null);
   const [diffExplanation, setDiffExplanation] = useState('');
+  const [currentProvider, setCurrentProvider] = useState(getSelectedProvider());
+
+  useEffect(() => {
+    setCurrentProvider(getSelectedProvider());
+  }, [isOpen]);
+
+  const handleProviderChange = (e) => {
+    const newProv = e.target.value;
+    setCurrentProvider(newProv);
+    setSelectedProvider(newProv);
+  };
 
   const chatEndRef = useRef(null);
 
@@ -304,12 +324,30 @@ CRITICAL RULES:
             <Sparkles className="w-3.5 h-3.5" />
           </div>
           <span className="font-semibold text-slate-100 text-xs">Prism AI Copilot</span>
-          <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.2 rounded font-mono border border-emerald-500/30">
-            Active
-          </span>
         </div>
 
-        <div className="flex items-center space-x-1">
+        <div className="flex items-center space-x-1.5">
+          {/* Quick Provider Selector */}
+          <div className="flex items-center space-x-1 bg-slate-900 border border-slate-800 rounded px-1.5 py-0.5 text-[10px]">
+            <Cpu className="w-2.5 h-2.5 text-indigo-400" />
+            <select
+              value={currentProvider}
+              onChange={handleProviderChange}
+              className="bg-transparent text-slate-300 font-medium outline-none cursor-pointer text-[10px]"
+              title="Change active AI engine"
+            >
+              <option value={AI_PROVIDERS.AUTO} className="bg-slate-900 text-slate-100">Auto (Cascade)</option>
+              <option value={AI_PROVIDERS.GROQ} className="bg-slate-900 text-slate-100">Groq (Llama 3.3 / Qwen)</option>
+              <option value={AI_PROVIDERS.CEREBRAS} className="bg-slate-900 text-slate-100">Cerebras (1M/day)</option>
+              <option value={AI_PROVIDERS.GEMINI} className="bg-slate-900 text-slate-100">Google Gemini 1.5</option>
+              <option value={AI_PROVIDERS.OPENROUTER} className="bg-slate-900 text-slate-100">OpenRouter (Free)</option>
+              <option value={AI_PROVIDERS.GITHUB} className="bg-slate-900 text-slate-100">GitHub Models</option>
+              <option value={AI_PROVIDERS.POLLINATIONS} className="bg-slate-900 text-slate-100">Pollinations (Zero-Key)</option>
+              <option value={AI_PROVIDERS.CUSTOM_OPENAI} className="bg-slate-900 text-slate-100">Custom OpenAI / Ollama</option>
+              <option value={AI_PROVIDERS.OFFLINE} className="bg-slate-900 text-slate-100">Offline Regex Engine</option>
+            </select>
+          </div>
+
           {/* Expand / Minimize Width */}
           <button
             onClick={() => setIsExpanded(!isExpanded)}
