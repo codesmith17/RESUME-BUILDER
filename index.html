@@ -2,11 +2,39 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    <title>PrismTeX — AI LaTeX & DOCX Studio</title>
+    
+    <!-- Google Fonts: Inter & JetBrains Mono & Computer Modern serif style -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&display=swap" rel="stylesheet">
+
+    <!-- KaTeX for client-side mathematical equation rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+
+    <!-- JSZip (Required for docx-preview, Mammoth, and project ZIP bundling) -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+    <!-- Industry Standard docx-preview for native Word document rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docx-preview@0.4.1/dist/docx-preview.css" />
+    <script src="https://cdn.jsdelivr.net/npm/docx-preview@0.4.1/dist/docx-preview.min.js"></script>
+
+    <!-- Industry Standard LaTeX.js (PEG.js AST Grammar Engine) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/latex.js@0.12.6/dist/latex.css">
+    <script src="https://cdn.jsdelivr.net/npm/latex.js@0.12.6/dist/latex.js"></script>
+
+    <!-- Mammoth.js for client-side DOCX text and formatting extraction -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+
+    <!-- PDF.js for client-side PDF text and structure extraction -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+
   </head>
-  <body>
+  <body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
