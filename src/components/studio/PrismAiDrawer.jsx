@@ -14,7 +14,8 @@ import {
   ArrowRight,
   Code2,
   Cpu,
-  ChevronDown
+  ChevronDown,
+  Key
 } from 'lucide-react';
 import { 
   executeAiTask, 
@@ -146,7 +147,9 @@ export default function PrismAiDrawer({
   onApplyCode,
   mode,
   diagnostics = [],
-  activeFileName
+  activeFileName,
+  isAiDisabled = false,
+  onOpenSettings
 }) {
   const [messages, setMessages] = useState([
     {
@@ -367,6 +370,33 @@ CRITICAL RULES:
           </button>
         </div>
       </div>
+
+      {/* AI Disabled Notification Banner */}
+      {isAiDisabled && (
+        <div className="bg-amber-950/40 border-b border-amber-500/30 p-3 text-xs">
+          <div className="flex items-start space-x-2.5">
+            <div className="w-5 h-5 rounded-md bg-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0 mt-0.5 border border-amber-500/30">
+              <Key className="w-3 h-3" />
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-amber-200 text-xs">AI Assistant is Disabled</p>
+              <p className="text-slate-300 text-[11px] mt-0.5 leading-relaxed">
+                You skipped adding an API key during setup. You can still use the complete LaTeX Editor, Live Native Compiler, Citations, and Export features.
+              </p>
+              {onOpenSettings && (
+                <button
+                  type="button"
+                  onClick={onOpenSettings}
+                  className="mt-2 text-[11px] px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 rounded font-medium border border-amber-500/40 transition-colors flex items-center space-x-1"
+                >
+                  <Sparkles className="w-3 h-3" />
+                  <span>Add Key & Enable AI</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Top Proposed Revision Banner */}
       {proposedCode && (

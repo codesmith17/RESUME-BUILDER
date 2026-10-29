@@ -14,6 +14,7 @@ import ImportExportModal from './ImportExportModal';
 import SettingsModal from './SettingsModal';
 import FirstTimeSetupOverlay from './FirstTimeSetupOverlay';
 import ProjectsModal from './ProjectsModal';
+import ApiKeyOnboardingModal from './ApiKeyOnboardingModal';
 
 import { compileLatexToHtml, parseLatexDiagnostics } from '../../services/latexCompiler';
 import { htmlToLatex, latexToHtml, exportToDocx } from '../../services/docxConverter';
@@ -153,6 +154,23 @@ export default function PrismStudio() {
   const [showFirstTimeSetup, setShowFirstTimeSetup] = useState(() => {
     try {
       return !localStorage.getItem('prism_first_time_setup_done');
+    } catch {
+      return false;
+    }
+  });
+
+  // AI Key Onboarding on startup (asks user for key or skips & disables AI)
+  const [showAiOnboarding, setShowAiOnboarding] = useState(() => {
+    try {
+      return !localStorage.getItem('prism_ai_onboarding_done');
+    } catch {
+      return false;
+    }
+  });
+
+  const [isAiDisabled, setIsAiDisabled] = useState(() => {
+    try {
+      return localStorage.getItem('prism_ai_disabled') === 'true';
     } catch {
       return false;
     }
@@ -701,6 +719,7 @@ export default function PrismStudio() {
         onOpenSettings={() => setIsSettingsOpen(true)}
         isAiDrawerOpen={isAiDrawerOpen}
         setIsAiDrawerOpen={setIsAiDrawerOpen}
+        isAiDisabled={isAiDisabled}
         onExportPdf={handleExportPdf}
         onExportDocx={handleExportDocx}
         onExportLatex={handleExportLatex}
@@ -845,6 +864,8 @@ export default function PrismStudio() {
           mode={mode}
           diagnostics={diagnostics}
           activeFileName={activeFile?.name}
+          isAiDisabled={isAiDisabled}
+          onOpenSettings={() => setIsSettingsOpen(true)}
         />
 
         {/* 2. Overleaf Premium Version History & Visual Diff */}
@@ -924,6 +945,15 @@ export default function PrismStudio() {
         onCreateProject={handleCreateProject}
         onDeleteProject={handleDeleteProject}
         onRenameProject={handleRenameProject}
+      />
+
+      {/* Startup API Key Onboarding Modal */}
+      <ApiKeyOnboardingModal
+        isOpen={!showFirstTimeSetup && showAiOnboarding}
+        onComplete={({ disabled }) => {
+          setShowAiOnboarding(false);
+          setIsAiDisabled(!!disabled);
+        }}
       />
     </div>
   );

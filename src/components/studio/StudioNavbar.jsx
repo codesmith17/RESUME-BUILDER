@@ -36,6 +36,7 @@ export default function StudioNavbar({
   onOpenSettings,
   isAiDrawerOpen,
   setIsAiDrawerOpen,
+  isAiDisabled = false,
   onExportPdf,
   onExportDocx,
   onExportLatex,
@@ -254,12 +255,19 @@ export default function StudioNavbar({
           className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
             isAiDrawerOpen
               ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/25 ring-1 ring-white/20'
-              : 'bg-gradient-to-r from-indigo-600/90 to-purple-600/90 hover:from-indigo-500 hover:to-purple-500 text-white shadow-xs shadow-indigo-900/30'
+              : isAiDisabled
+                ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 shadow-xs'
+                : 'bg-gradient-to-r from-indigo-600/90 to-purple-600/90 hover:from-indigo-500 hover:to-purple-500 text-white shadow-xs shadow-indigo-900/30'
           }`}
-          title="Open Prism AI Copilot (Ctrl+K)"
+          title={isAiDisabled ? "Prism AI (Disabled - Click to Open & Enable)" : "Open Prism AI Copilot (Ctrl+K)"}
         >
-          <Sparkles className="w-3.5 h-3.5 text-indigo-200" />
+          <Sparkles className={`w-3.5 h-3.5 ${isAiDisabled ? 'text-slate-400' : 'text-indigo-200'}`} />
           <span>Prism AI</span>
+          {isAiDisabled && (
+            <span className="text-[9px] bg-slate-900 text-slate-400 px-1 py-0.2 rounded font-mono border border-slate-700">
+              Off
+            </span>
+          )}
         </button>
 
         {/* Settings */}
